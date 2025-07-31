@@ -77,9 +77,14 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'e-com',
+    "default": {
+        "ENGINE": "djongo",
+        "NAME": "e-com",
+        "CLIENT": {
+            "host": "mongodb+srv://devaprojects66:123@cluster0.lg2mtcu.mongodb.net/test?retryWrites=true",
+            "authSource": "admin",
+            "authMechanism": "SCRAM-SHA-1",
+        },
     }
 }
 
