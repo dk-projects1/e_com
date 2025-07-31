@@ -1,0 +1,120 @@
+{% load static %}
+
+<style>
+  /* Scrollbar styling for WebKit browsers (Chrome, Edge, Safari) */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #4CAF50;  /* Customize thumb color */
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* ✅ This removes the up/down arrows in WebKit (Chrome, Edge) */
+.sidebar::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+  width: 0;
+}
+
+/* Optional: Firefox support */
+.sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: #000000 transparent;
+}
+
+</style>
+<aside class="sidebar">
+  <div class="logo">
+    <img src="{% static 'images/logo1.png' %}" alt="Logo">
+  </div>
+  <nav>
+    <ul>
+      <div class="nav-section"><h4>Quick Links</h4></div>
+      <li class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+        <i class="fas fa-home"></i>
+        <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'new_product' %}active{% endif %}">
+        <i class="fas fa-box"></i>
+        <a class="nav-link" href="{% url 'new_product' %}">New Product</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'new_coupon' %}active{% endif %}">
+        <i class="fas fa-gift"></i>
+        <a class="nav-link" href="{% url 'new_coupon' %}">New Coupon</a>
+      </li>
+
+      <div class="nav-section"><h4>Catalog</h4></div>
+      <li class="nav-item {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
+        <i class="fas fa-box"></i>
+        <a class="nav-link" href="{% url 'product_list' %}">Products</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'category' %}active{% endif %}">
+        <i class="fas fa-link"></i>
+        <a class="nav-link" href="{% url 'category' %}">Categories</a>
+      </li>
+      <li class="nav-item">
+        <i class="fas fa-tags">
+          <a class="nav-link" href="{% url 'collection_list' %}">
+        </i> Collections</a>
+      </li>
+      <!-- <li class="nav-item">
+        <i class="fas fa-hashtag"></i> 
+        <a class="nav-link" href="">Attributes</a>
+      </li> -->
+
+      <div class="nav-section"><h4>Sale</h4></div>
+      <li class="nav-item">
+        <i class="fas fa-cube"></i> Orders
+      </li>
+
+      <div class="nav-section"><h4>Customer</h4></div>
+      <li class="nav-item">
+        <i class="fas fa-users"></i> Customers
+      </li>
+
+      <div class="nav-section"><h4>Promotion</h4></div>
+      <li class="nav-item {% if request.resolver_match.url_name == 'coupon_list' %}active{% endif %}">
+        <i class="fas fa-gift"></i>
+        <a class="nav-link" href="{% url 'coupon_list' %}">Coupons</a>
+      </li>
+
+      <div class="nav-section"><h4>Setting</h4></div>
+      <li class="nav-item {% if request.resolver_match.url_name == 'paages' %}active{% endif %}">
+        <i class="fas fa-cog"></i> 
+        <a class="nav-link" href="{% url 'paages' %}">Pages</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'show_credentials' %}active{% endif %}">
+        <i class="fas fa-cog"></i> 
+        <a class="nav-link" href="{% url 'show_credentials' %}">Credentials</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
+        <i class="fas fa-sign-out-alt"></i>
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+      </li>
+    </ul>
+  </nav>
+</aside>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.querySelector(".sidebar");
+    const activeItem = sidebar.querySelector(".nav-item.active");
+
+    if (sidebar && activeItem) {
+      const sidebarRect = sidebar.getBoundingClientRect();
+      const itemRect = activeItem.getBoundingClientRect();
+
+      const offset = itemRect.top - sidebarRect.top;
+      const centerOffset = offset - sidebar.clientHeight / 2 + itemRect.height / 2;
+
+      sidebar.scrollTop += centerOffset;
+    }
+  });
+</script> 

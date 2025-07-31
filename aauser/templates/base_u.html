@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="language" content="en">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}DKenci{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Serif:opsz@8..144&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    * {
+      font-family: 'Roboto Serif', serif;
+    }
+
+    /* User Menu Dropdown */
+    .user-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .account-icon {
+      cursor: pointer;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+    }
+
+    .user-menu {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 35px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      min-width: 160px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+    }
+
+    .user-menu a {
+      display: block;
+      padding: 10px;
+      color: #444;
+      text-decoration: none;
+    }
+
+    .user-menu a:hover {
+      background: #f472b6;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  {% if request.path == '/' %}
+  <header>
+    <h1>Welcome to DKenci</h1>
+    <p>Discover the latest trends in women's dresses</p>
+  </header>
+  {% endif %}
+
+  <nav>
+    <div class="hamburger" onclick="toggleMobileMenu()">☰</div>
+    <div class="logo"><a href="/"><img src="{% static 'images/logo_pink_t.png' %}" alt="Logo" /></a></div>
+    <div class="nav-right">
+      <div id="navMenu" class="nav-menu">
+        <a href="/">Home</a>
+        <div class="dropdown" onclick="toggleDropdown(this)">
+          <span class="dropdown-toggle">Catalog ▾</span>
+          <div class="dropdown-content">
+            {% for i in catelog %}
+            <a href="{% url 'view_catlog' i.url_key %}">{{ i.name }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        <a href="{% url 'about' %}">About us</a>
+        <a href="{% url 'contact' %}">Contact us</a>
+      </div>
+
+      <!-- User Account Dropdown -->
+      <div class="user-dropdown">
+        <div class="account-icon" onclick="toggleUserMenu()">
+          <svg fill="#f472b6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+            <path
+              d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2c-3.3 0-9.9 1.7-9.9 5v2h19.8v-2c0-3.3-6.6-5-9.9-5z" />
+          </svg>
+        </div>
+
+        <div id="userMenu" class="user-menu">
+          {% if request.session.user_id %}
+          <a href="/profile">My Details</a>
+          <a href="/orders">My Orders</a>
+          <a href="/logout">Logout</a>
+          {% else %}
+          <a href="/login">Login</a>
+          <a href="/signup">Signup</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Cart Icon -->
+      <div class="nav-icon" onclick="openCart()">
+        <svg fill="#f472b6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+          <path d="M7 10a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v13a5 5 0 0 1-5 5H12a5 5 0 0 1-5-5V10z" stroke="#f472b6" stroke-width="2" fill="none" />
+          <path d="M8 10h16v13a4 4 0 0 1-4 4H12a4 4 0 0 1-4-4V10z" fill="#f472b6" fill-opacity="0.15" />
+          <path d="M11 10a5 5 0 0 1 10 0" fill="none" stroke="#f472b6" stroke-width="2" />
+        </svg>
+        <span id="cartCount" class="cart-count">0</span>
+      </div>
+    </div>
+  </nav>
+
+  {% block content %}
+  {% endblock %}
+
+  {% include "cart/cart.html" %}
+
+  {% for footer in footer_ %}
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <h2>DKENCI</h2>
+        <p>{{ footer.qotes }}<br>{{ footer.quotes }}</p>
+        <p><em>“{{ footer.em }}”</em></p>
+      </div>
+
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul class="links">
+          <li><a href="#">Search</a></li>
+          <li><a href="{% url 'about' %}">About Us</a></li>
+          <li><a href="{% url 'shipping' %}">Shipping Policy</a></li>
+          <li><a href="{% url 'refund'%}">Refund Policy</a></li>
+          <li><a href="{% url 'terms' %}">Terms of Service</a></li>
+          <li><a href="{% url 'contact' %}">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <div class="contact-info">
+          <p><i class="fa fa-clock"></i> {{ footer.phone_no }}</p>
+          <p><i class="fa fa-envelope"></i> {{ footer.email_id }}</p>
+        </div><br>
+        <img src="{% static 'images/logo2.png' %}" alt="Logo" style="filter: brightness(0) invert(1); max-width: 120px;" /><br>
+        <div class="social-icons">
+          <a href="{{ footer.fb }}" target="_blank"><i class="fab fa-facebook"></i></a>
+          <a href="{{ footer.insta }}" target="_blank"><i class="fab fa-instagram"></i></a>
+          <a href="{{ footer.youtube }}" target="_blank"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h3>Subscribe to our emails</h3>
+        <form class="subscribe-form" action="#" method="post">
+          <input type="email" placeholder="Email" required>
+          <button type="submit"><i class="fa fa-arrow-right"></i></button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-copyright">
+      &copy; 2025, DKENCI WOMENS WEAR Powered by DK_Mediaworks |
+      <a href="{% url 'refund'%}">Refund policy</a> |
+      <a href="{% url 'terms' %}">Terms of service</a> |
+      <a href="{% url 'shipping' %}">Shipping policy</a> |
+      <a href="{% url 'contact' %}">Contact information</a>
+    </div>
+
+    <a href="https://api.whatsapp.com/send/?phone=91{{ footer.wno }}" class="whatsapp-float" target="_blank">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
+    </a>
+  </footer>
+  {% endfor %}
+
+  {% block scripts %}
+  <script src="{% static 'js/scripts.js' %}"></script>
+  <script>
+    function toggleUserMenu() {
+      const menu = document.getElementById("userMenu");
+      menu.style.display = menu.style.display === "block" ? "none" : "block";
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+      const dropdown = document.querySelector(".user-dropdown");
+      if (!dropdown.contains(event.target)) {
+        document.getElementById("userMenu").style.display = "none";
+      }
+    });
+  </script>
+  {% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!-- templates/dashboard.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+<div class="cards">
+  <div class="card">
+    <h3>Sale Statistics</h3>
+    <canvas id="salesChart" height="150"></canvas>
+  </div>
+  <div class="card">
+    <h3>Lifetime Sales</h3>
+    <ul class="stats">
+      <li><span class="dot blue"></span> 10102 orders</li>
+      <li><span class="dot teal"></span> $129,104,902.56 lifetime sale</li>
+      <li><span class="dot green"></span> 0% orders completed</li>
+      <li><span class="dot red"></span> 0% orders cancelled</li>
+    </ul>
+    <canvas id="lifetimeChart" height="150"></canvas>
+  </div>
+</div>
+
+<div class="card">
+  <h3>Best Sellers</h3>
+  <div class="product">
+    <img src="https://via.placeholder.com/40" alt="Nmd r1 shoes">
+    <div>Nmd_r1 shoes</div>
+    <div>$537.00</div>
+    <div>144539 sold</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

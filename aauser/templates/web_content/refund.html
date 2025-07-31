@@ -1,0 +1,90 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}Refund & Exchange Policy | DKenci{% endblock %}
+
+{% block content %}
+<section class="policy-section">
+    <div class="policy-container">
+        <h1 class="policy-title">Refund & Exchange Policy</h1>
+
+        <p>No return, exchange, or refund will be accepted based on personal satisfaction. Perceptions and preferences vary from person to person.</p>
+
+        <p>No return, exchange, or refund for size issues. Kindly check the size chart on our website before placing your order.</p>
+
+        <p>Since all the products are checked properly before dispatch, we do not accept return requests unless the item is <strong>damaged</strong> or if you receive the <strong>wrong product</strong>.</p>
+
+        <p>If you are affected by any of the above-mentioned cases, you can claim your exchange or refund request through WhatsApp at  
+        <a href="https://wa.me/916374247995" target="_blank">+91 63742 47995</a>.</p>
+
+        <h3>📌 Exchange Conditions</h3>
+        <ul>
+            <li>Exchange request can be initiated only <strong>once per order</strong>.</li>
+            <li>Request must be made <strong>within 1 (one) day</strong> of delivery.</li>
+            <li>Product(s) should be <strong>unused & unwashed</strong>.</li>
+            <li>Tags should be <strong>intact</strong>.</li>
+            <li>Product(s) should not be purchased during a <strong>sale or discounted price</strong>.</li>
+            <li>Product(s) should not be <strong>custom altered</strong>.</li>
+            <li>An <strong>unpacking video (without pause or edit)</strong> is mandatory for damage or wrong product claims.</li>
+            <li>Customer will have to send the parcel back to us.</li>
+        </ul>
+    </div>
+</section>
+
+<style>
+.policy-section {
+    padding: 50px 20px;
+    background: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+.policy-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.policy-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f472b6;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.policy-container h3 {
+    color: #f472b6;
+    margin-top: 20px;
+}
+
+.policy-container p, 
+.policy-container ul li {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.policy-container ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.policy-container a {
+    color: #f472b6;
+    text-decoration: none;
+}
+
+.policy-container a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .policy-title {
+        font-size: 24px;
+    }
+    .policy-container p, .policy-container ul li {
+        font-size: 14px;
+    }
+}
+</style>
+{% endblock %}

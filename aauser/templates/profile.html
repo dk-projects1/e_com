@@ -1,0 +1,160 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}My Profile - DKenci{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <h1>My Profile</h1>
+
+    <div class="profile-card">
+        <div class="profile-info">
+            <p><strong>Name:</strong> {{ user.name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            {% if user.phone_no %}
+            <p><strong>Phone:</strong> {{ user.phone_no }}</p>
+            {% endif %}
+            <p><strong>Member Since:</strong> {{ user.created_at|date:"M d, Y" }}</p>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'orders' %}" class="btn">My Orders</a>
+            <a href="/logout/" class="btn logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- Addresses Section -->
+    <div class="addresses-section">
+        <div class="addresses-header">
+            <h2>Addresses</h2>
+            <a href="{% url 'add_address' %}" class="add-link">+ Add</a>
+        </div>
+
+{% if addresses and addresses|length > 0 %}
+    {% for address in addresses %}
+        <div class="address-card">
+            <p>{{ address.name }} | {{ address.phone }}</p>
+            <p>{{ address.street }}, {{ address.city }}, <br>{{ address.state }} - {{ address.zipcode }}, {{ address.country }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="no-address">
+        <i class="fa fa-info-circle"></i> No addresses added
+    </div>
+{% endif %}
+
+    </div>
+</div>
+
+<style>
+.profile-page {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.profile-page h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #f472b6;
+}
+
+.profile-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.profile-pic {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #f472b6;
+    margin-bottom: 15px;
+}
+
+.profile-info {
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.profile-info p {
+    margin: 6px 0;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 15px;
+    background: #f472b6;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background: #d63f84;
+}
+
+.logout {
+    background: #ff6b6b;
+}
+
+.logout:hover {
+    background: #e64545;
+}
+
+/* Addresses section */
+.addresses-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.addresses-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.add-link {
+    color: #f472b6;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.add-link:hover {
+    text-decoration: underline;
+}
+
+.no-address {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+}
+
+.address-card {
+    padding: 10px;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.address-card:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}

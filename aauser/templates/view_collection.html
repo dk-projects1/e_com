@@ -1,0 +1,278 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}{{ collection.name }} | View All{% endblock %}
+
+{% block content %}
+
+<style>
+  .collection-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+  }
+
+  .collection-block {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .collection-block h2 {
+    font-size: 2rem;
+    color: #bb157d;
+    font-size: 2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .collection-block p {
+  margin-bottom: 0; /* remove excess space */
+}
+
+  /* NEW: Flex wrapper for sorting dropdown */
+  .sorting-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 2rem 0 0.5rem;
+  }
+
+  .custom-dropdown {
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    min-width: 220px;
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .dropdown-label-select {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fce7f3;
+    padding: 0.6rem 1rem;
+    border-radius: 30px;
+    border: 1px solid #fbcfe8;
+    color: #bb157d;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    width: 100%;
+  }
+
+  .dropdown-label-select label {
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 0;
+    color: #bb157d;
+    cursor: pointer;
+  }
+
+  .dropdown-select::after {
+    content: "▼";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #bb157d;
+    font-size: 0.7rem;
+  }
+
+  .dropdown-options {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    width: 100%;
+    background-color: #fff0f6;
+    border: 1px solid #fbcfe8;
+    border-radius: 12px;
+    display: none;
+    z-index: 99;
+    box-shadow: 0 4px 10px rgba(153, 8, 74, 0.1);
+    margin-top: 5px;
+  }
+
+  .dropdown-options li {
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    color: #bb157d;
+    font-weight: 500;
+  }
+
+  .dropdown-options li:hover {
+    background-color: #fce7f3;
+  }
+
+  .products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    padding: 0 1rem 2rem;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .product-card {
+    background: #fff;
+    border: 1px solid #fbcfe8;
+    border-radius: 16px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(153, 8, 74, 0.05);
+    transition: transform 0.2s;
+  }
+
+  /* .product-card:hover {
+    transform: translateY(-5px);
+  } */
+
+  .product-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+  }
+
+  .prod-title {
+    font-weight: 600;
+    margin-top: 0.8rem;
+    font-size: 1rem;
+    color: #bb157d;
+  }
+
+  .prod-price {
+    color: #bb157d;
+    font-weight: 700;
+    margin-top: 0.4rem;
+  }
+
+  .add-cart {
+    margin-top: 0.8rem;
+    padding: 0.5rem 1rem;
+    background: #bb157d;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .add-cart:hover {
+    background: #9c0a68;
+  }
+
+  @media (max-width: 768px) {
+    .collection-block h2 {
+      font-size: 1.5rem;
+    }
+
+    .dropdown-label-select {
+      flex-direction: row;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      min-width: unset;
+    }
+
+    .custom-dropdown {
+      width: 100%;
+      max-width: 100%;
+      padding: 0 1rem;
+    }
+
+    .sorting-wrapper {
+      padding: 0 1rem;
+    }
+
+    .products {
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+
+    .product-card {
+      padding: 0.8rem;
+    }
+  }
+</style>
+
+<div class="collection-container">
+  <div class="collection-block">
+    <h2>{{ collection.name }}</h2>
+    <p>{{ collection.description }}</p>
+  </div>
+
+  <!-- Sorting dropdown inside wrapper -->
+  <div class="sorting-wrapper">
+    <div class="custom-dropdown" id="dropdownWrapper">
+      <div class="dropdown-label-select" id="dropdownSelect">
+        <label>Sort by:</label>
+        <span>Featured ↓</span>
+      </div>
+      <ul class="dropdown-options" id="dropdownOptions">
+        <li data-value="featured">Featured</li>
+        <li data-value="low_to_high">Price: Low to High</li>
+        <li data-value="high_to_low">Price: High to Low</li>
+        <li data-value="newest">Newest</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="products">
+  {% for product in products %}
+  <a href="{% url 'product' product.url_key %}" style="text-decoration: none; color: inherit;">
+
+    <div class="product-card"
+         data-id="{{ product.pk }}"
+         data-name="{{ product.name }}"
+         data-price="{{ product.price }}"
+         data-img="data:image/png;base64,{{ product.image }}">
+     
+      <img src="data:image/png;base64,{{ product.image }}"
+           class="product-img"
+           alt="{{ product.name }}" />
+      
+      <div class="prod-title">{{ product.name }}</div>
+      <del>RS. {{ product.f_price}}</del>
+      <div class="prod-price">RS. {{ product.price }}</div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+
+<script>
+  const dropdownSelect = document.getElementById('dropdownSelect');
+  const dropdownOptions = document.getElementById('dropdownOptions');
+  const dropdownWrapper = document.getElementById('dropdownWrapper');
+
+  dropdownSelect.addEventListener('click', () => {
+    dropdownOptions.style.display = dropdownOptions.style.display === 'block' ? 'none' : 'block';
+  });
+
+  dropdownOptions.querySelectorAll('li').forEach(option => {
+    option.addEventListener('click', () => {
+      const value = option.getAttribute('data-value');
+      dropdownSelect.querySelector('span').textContent = option.textContent;
+      dropdownOptions.style.display = 'none';
+
+      const form = document.createElement('form');
+      form.method = 'GET';
+      form.action = window.location.href.split('?')[0];
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'sort';
+      input.value = value;
+
+      form.appendChild(input);
+      document.body.appendChild(form);
+      form.submit();
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!dropdownWrapper.contains(e.target)) {
+      dropdownOptions.style.display = 'none';
+    }
+  });
+</script>
+
+{% endblock %}

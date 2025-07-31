@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ product.name|default:"Add New Dress" }}{% endblock %}
+
+{% block content %}
+<style>
+  * {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+  }
+
+  .container {
+    max-width: 700px;
+    background: white;
+    margin: auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  h2 {
+    text-align: center;
+    color: #444;
+    margin-bottom: 25px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  input[type="file"] {
+    margin-bottom: 15px;
+  }
+
+  .radio-group {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+  }
+
+  .radio-group label {
+    font-weight: normal;
+  }
+
+  button {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+
+  .section-title {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #222;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+  }
+</style>
+
+<div class="container">
+  <h2>{{ product.name|default:"Add New Dress" }}</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="name">Product Name</label>
+    <input type="text" id="name" name="name" value="{{ product.name|default:'' }}" required />
+
+    <label for="category">Category</label>
+    <select id="category" name="category" required>
+      {% if product.category %}
+        <option value="{{ product.category.pk }}">{{ product.category.name }}</option>
+      {% endif %}
+      {% for cat in categories %}
+        <option value="{{ cat.pk }}">{{ cat.name }}</option>
+      {% endfor %}
+    </select>   
+
+    <label for="collection">Collection</label>
+    <select id="collection" name="collection" required>
+      {% if product.collection %}
+        <option value="{{ product.collection.pk }}">{{ product.collection.name }}</option>
+      {% endif %}
+      {% for coll in collections %}
+        <option value="{{ coll.pk }}">{{ coll.name }}</option>
+      {% endfor %}
+    </select>
+
+
+    <label for="price">Price (₹)</label>
+    <input type="number" id="price" name="price" min="0" step="0.01" value="{{ product.price|default:'' }}" required />
+
+    
+    <label for="F_price">F_price (₹)</label>
+    <input type="number" id="price" name="F_price" min="0" step="0.01" value="{{ product.f_price|default:'' }}" required />F_price
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="4">{{ product.description|default:'' }}</textarea>
+
+    <label for="image">Product Image</label>
+    <input type="file" id="image" name="image" accept="image/*" />
+
+    <label class="section-title">Stock by Size</label>
+
+    <label for="stock_s">Size S</label>
+    <input type="number" id="stock_s" name="stock_s" min="0" value="{{ product.variants.S|default:'0' }}" required>
+
+    <label for="stock_m">Size M</label>
+    <input type="number" id="stock_m" name="stock_m" min="0" value="{{ product.variants.M|default:'0' }}" required>
+
+    <label for="stock_l">Size L</label>
+    <input type="number" id="stock_l" name="stock_l" min="0" value="{{ product.variants.L|default:'0' }}" required>
+
+    <label for="stock_xl">Size XL</label>
+    <input type="number" id="stock_xl" name="stock_xl" min="0" value="{{ product.variants.XL|default:'0' }}" required>
+
+    <label class="section-title">Delivery & Visibility</label>
+
+    <label>Free Delivery</label>
+    <div class="radio-group">
+      <label><input type="radio" name="free_delivery" value="yes" {% if product.free_delivery == "yes" %}checked{% endif %}> Yes</label>
+      <label><input type="radio" name="free_delivery" value="no" {% if product.free_delivery == "no" %}checked{% endif %}> No</label>
+    </div>
+
+    <label>Visibility</label>
+    <div class="radio-group">
+      <label><input type="radio" name="visibility" value="public" {% if product.visibility == "public" %}checked{% endif %}> Public</label>
+      <label><input type="radio" name="visibility" value="hidden" {% if product.visibility == "hidden" %}checked{% endif %}> Hidden</label>
+    </div>
+
+    <label class="section-title">Search Engine Optimization</label>
+
+    <label for="url_key">URL Key</label>
+    <input type="text" id="url_key" name="url_key" value="{{ product.url_key|default:'' }}" required />
+
+    <label for="meta_title">Meta Title</label>
+    <input type="text" id="meta_title" name="meta_title" maxlength="60" value="{{ product.meta_title|default:'' }}" required />
+
+    <label for="meta_keywords">Meta Keywords</label>
+    <input type="text" id="meta_keywords" name="meta_keywords" value="{{ product.meta_keywords|default:'' }}" required />
+
+    <label for="meta_description">Meta Description</label>
+    <textarea id="meta_description" name="meta_description" rows="3" maxlength="160">{{ product.meta_description|default:'' }}</textarea>
+
+    <button type="submit">{% if product %}Update{% else %}Add{% endif %} Product</button>
+  </form>
+</div>
+{% endblock %}

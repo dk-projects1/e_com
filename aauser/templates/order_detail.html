@@ -1,0 +1,113 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}Order Details - DKenci{% endblock %}
+
+{% block content %}
+<div class="order-detail-page">
+    <h1>Order Details</h1>
+
+    <div class="order-info">
+        <p><strong>Order ID:</strong> #{{ order.pk }}</p>
+        <p><strong>Date:</strong> {{ order.created_at|date:"M d, Y" }}</p>
+        <p><strong>Status:</strong> <span class="status {{ order.status|lower }}">{{ order.status }}</span></p>
+        {% if order.copun_code %}
+        <p><strong>Coupon:</strong> {{ order.copun_code }}</p>
+        {% endif %}
+        <p><strong>Total:</strong> ₹{{ order.total }}</p>
+    </div>
+
+    <h2>Items</h2>
+    <div class="order-items">
+        {% for key, item in order.items.items %}
+            <div class="order-item">
+                <img src="{{ item.img }}" alt="{{ item.name }}">
+                <div>
+                    <p><strong>{{ item.name }}</strong></p>
+                    <p>Size: {{ item.size }}</p>
+                    <p>Qty: {{ item.qty }}</p>
+                    <p>Price: ₹{{ item.price }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="order-back">
+        <a href="{% url 'orders' %}">← Back to Orders</a>
+    </div>
+</div>
+
+<style>
+.order-detail-page {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+.order-detail-page h1 {
+    text-align: center;
+    color: #f472b6;
+    margin-bottom: 20px;
+}
+
+.order-info {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.status {
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.status.pending { background: #fff3cd; color: #856404; }
+.status.shipped { background: #cce5ff; color: #004085; }
+.status.delivered { background: #d4edda; color: #155724; }
+.status.cancelled { background: #f8d7da; color: #721c24; }
+
+.order-items {
+    border: 1px solid #eee;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.order-back {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.order-back a {
+    text-decoration: none;
+    color: #f472b6;
+    font-weight: bold;
+}
+.order-back a:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}

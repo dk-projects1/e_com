@@ -1,0 +1,147 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}Checkout | Review Cart{% endblock %}
+
+{% block content %}
+
+<style>
+  .checkout-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid #fbcfe8;
+    box-shadow: 0 0 10px rgba(153, 8, 74, 0.1);
+  }
+
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #fbcfe8;
+  }
+
+  .cart-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-right: 1rem;
+  }
+
+  .cart-details {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .cart-info {
+    flex: 1;
+  }
+
+  .cart-info h4 {
+    margin: 0 0 0.4rem;
+    color: #bb157d;
+  }
+
+  .cart-info p {
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+  }
+
+  .cart-summary {
+    margin-top: 2rem;
+    text-align: right;
+  }
+
+  .checkout-btn {
+    margin-top: 1rem;
+    background: #bb157d;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .checkout-btn:hover {
+    background: #9c0a68;
+  }
+</style>
+
+<div class="checkout-container">
+  <h2 style="color: #bb157d;">Review Your Cart</h2>
+  <div id="checkoutItems"></div>
+
+  <div class="cart-summary">
+    <h3>Total: ₹<span id="checkoutTotal">0</span></h3>
+    <button class="checkout-btn" onclick="submitCheckout()">Place Order</button>
+  </div>
+</div>
+
+<script>
+  let cart = JSON.parse(localStorage.getItem('cart')) || {};
+  let checkoutItems = document.getElementById('checkoutItems');
+  let checkoutTotal = document.getElementById('checkoutTotal');
+
+  function renderCheckout() {
+    checkoutItems.innerHTML = '';
+    let total = 0;
+
+    Object.values(cart).forEach(item => {
+      const subtotal = item.price * item.qty;
+      total += subtotal;
+
+      checkoutItems.innerHTML += `
+        <div class="cart-item">
+          <div class="cart-details">
+            <img src="${item.img}" alt="${item.name}">
+            <div class="cart-info">
+              <h4>${item.name}</h4>
+              <p>Size: ${item.size}</p>
+              <p>Qty: ${item.qty}</p>
+              <p>Price: ₹${item.price}</p>
+              <p>Subtotal: ₹${subtotal}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+
+    checkoutTotal.textContent = total.toFixed(2);
+  }
+
+  function submitCheckout() {
+    if (Object.keys(cart).length === 0) {
+      alert("Cart is empty!");
+      return;
+    }
+
+    fetch('/checkout/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      },
+      body: JSON.stringify(cart)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        alert('Order placed successfully!');
+        localStorage.removeItem('cart');
+        window.location.href = '/';  // Redirect to home
+      } else {
+        alert('Something went wrong.');
+      }
+    });
+  }
+
+  renderCheckout();
+</script>
+
+{% endblock %}

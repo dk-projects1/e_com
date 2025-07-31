@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+  }
+
+  th,
+  td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+
+  thead {
+    background-color: #f8f9fa;
+  }
+
+  th {
+    font-weight: 600;
+    color: #333;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f5f9;
+  }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .dot.green {
+    background-color: #28a745;
+  }
+
+  .dot.red {
+    background-color: #dc3545;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .add-category-btn {
+    background-color: #00834c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+  }
+</style>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+  <h2>Home page position</h2>
+  <a href="{% url 'new_layout' %}" class="add-category-btn">
+    + Add Home page position
+  </a>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>position</th>
+      <th>Name</th>
+      <th>created_date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for category in layouts %}
+    <tr>
+      <td>{{ category.position }}</td>
+      <td>{{ category.collection_name.name }}</td>
+      <td>{{ category.created_date }}</td>
+      <td>
+        <a href="{% url 'edit_layout' category.pk %}" onclick="return confirm('Are you sure you want to edit this category?');">✏️ Edit</a>
+        |
+        <a href="{% url 'delete_layout' category.pk %}" onclick="return confirm('Are you sure you want to delete this category?');">🗑️ Delete</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="4">No categories found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+  <h2>Footer Section</h2></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Quotes 1</th>
+      <th>Quotes 2</th>
+      <th>em</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for footer in footer_ %}
+    <tr>
+      <td>{{ footer.qotes }}</td>
+      <td>{{ footer.quotes }}</td>
+      <td>{{ footer.em }}</td>
+      <td>
+        <a href="{% url 'edit_footer' footer.pk %}" onclick="return confirm('Are you sure you want to edit this category?');">✏️ Edit</a>
+      </td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="4">No categories found.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

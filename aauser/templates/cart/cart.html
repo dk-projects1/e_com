@@ -1,0 +1,183 @@
+{% load static %}
+<!-- Cart Sidebar -->
+<div id="cartSidebar">
+  <div class="cart-inner">
+    <div class="cart-title-row">
+      <h2>Your Cart</h2>
+      <button onclick="closeCart()">×</button>
+    </div>
+    <div id="cartItems"></div>
+  </div>
+  <div class="cart-bottom">
+    <div class="cart-total-row">
+      <span>Total</span>
+      <span id="cartTotal">₹0</span>
+    </div>
+    <div class="tax-text">Tax included</div>
+    <button id="checkoutBtn" class="cart-btn">Checkout</button>
+    <button class="cart-btn continue-btn" onclick="closeCart()">Continue Shopping</button>
+  </div>
+</div>
+
+<script>
+// Initialize cart from localStorage
+let cart = JSON.parse(localStorage.getItem('cart')) || {};
+
+// Save cart to localStorage
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+// Add to cart with stock check
+function addToCart(button) {
+  const card = button.closest('.product-card');
+  const id = card.getAttribute('data-id');
+  const name = card.getAttribute('data-name');
+  const price = parseInt(card.getAttribute('data-price'));
+  const img = card.getAttribute('data-img');
+
+  const size = document.getElementById('size').value;
+  const qty = parseInt(document.getElementById('quantity').value);
+
+  if (!size) {
+    alert("Please select a size.");
+    return;
+  }
+
+  const selectedBtn = document.querySelector(`.size-option[data-size="${size}"]`);
+  const stock = selectedBtn ? parseInt(selectedBtn.dataset.stock) : null;
+
+  const key = `${id}_${size}`;
+  const existingQty = cart[key] ? cart[key].qty : 0;
+
+  if (stock !== null && qty + existingQty > stock) {
+    alert(`Only ${stock} available for this size.`);
+    return;
+  }
+
+  if (!cart[key]) {
+    cart[key] = { id, name, price, img, qty, size };
+  } else {
+    cart[key].qty += qty;
+  }
+
+  saveCart();
+  updateCart();
+}
+
+// Remove from cart
+function removeFromCart(key) {
+  delete cart[key];
+  saveCart();
+  updateCart();
+}
+
+// Change quantity in cart (with stock check)
+function changeQty(key, delta) {
+  if (cart[key]) {
+    const [id, size] = key.split('_');
+    const sizeBtn = document.querySelector(`.size-option[data-size="${size}"]`);
+    const stock = sizeBtn ? parseInt(sizeBtn.dataset.stock) : null;
+
+    if (delta > 0 && stock !== null && cart[key].qty + 1 > stock) {
+      alert(`Only ${stock} available for this size.`);
+      return;
+    }
+
+    cart[key].qty += delta;
+    if (cart[key].qty <= 0) {
+      delete cart[key];
+    }
+    saveCart();
+    updateCart();
+  }
+}
+
+// Update cart HTML
+function updateCart() {
+  const cartItems = document.getElementById("cartItems");
+  cartItems.innerHTML = '';
+  let total = 0;
+  let count = 0;
+
+  for (let key in cart) {
+    const item = cart[key];
+    const price = item.price * item.qty;
+    total += price;
+    count += item.qty;
+
+    cartItems.innerHTML += `
+      <div class="cart-product">
+        <img src="${item.img}" alt="${item.name}" />
+        <div class="cart-info">
+          <span>${item.name}</span>
+          <small>(Size: ${item.size})</small>
+          <div class="mini">₹${item.price} × ${item.qty}</div>
+          <div class="cart-controls">
+            <button onclick="changeQty('${key}', -1)">−</button>
+            <button onclick="changeQty('${key}', 1)">+</button>
+            <button class="remove-btn" onclick="removeFromCart('${key}')">×</button>
+          </div>
+        </div>
+        <div class="prod-total">₹${price}</div>
+      </div>
+    `;
+  }
+
+  document.getElementById("cartTotal").innerText = "₹" + total;
+  const cartCount = document.getElementById("cartCount");
+  if (cartCount) {
+    cartCount.innerText = count;
+  }
+}
+
+// Show/hide cart
+function openCart() {
+  document.getElementById("cartSidebar").style.display = "flex";
+}
+function closeCart() {
+  document.getElementById("cartSidebar").style.display = "none";
+}
+
+// CSRF Token
+function getCSRFToken() {
+  const name = "csrftoken=";
+  const decoded = decodeURIComponent(document.cookie);
+  const cookies = decoded.split(";");
+  for (let i = 0; i < cookies.length; i++) {
+    let cookie = cookies[i].trim();
+    if (cookie.startsWith(name)) return cookie.substring(name.length);
+  }
+  return "";
+}
+
+// On DOM load
+document.addEventListener("DOMContentLoaded", () => {
+  updateCart();
+
+  const checkoutBtn = document.getElementById("checkoutBtn");
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", () => {
+      fetch("/checkout/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFToken()
+        },
+        body: JSON.stringify(cart)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error("Checkout failed");
+        return response.json();
+      })
+      .then(() => {
+        window.location.href = "/checkout/";
+      })
+      .catch(error => {
+        console.error(error);
+        alert("Checkout error. Please try again.");
+      });
+    });
+  }
+});
+</script>

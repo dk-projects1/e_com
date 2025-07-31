@@ -1,0 +1,219 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}Checkout | Review Cart{% endblock %}
+
+{% block content %}
+
+<style>
+  .checkout-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 1px solid #fbcfe8;
+    box-shadow: 0 0 10px rgba(153, 8, 74, 0.1);
+  }
+  .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #fbcfe8; }
+  .cart-details { flex: 1; display: flex; align-items: center; }
+  .cart-item img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; margin-right: 1rem; }
+  .cart-info { flex: 1; }
+  .cart-info h4 { margin: 0 0 0.4rem; color: #bb157d; }
+  .cart-info p { margin: 0.2rem 0; font-size: 0.9rem; }
+  .qty-controls { display: flex; align-items: center; margin-top: 0.5rem; }
+  .qty-controls button { background: #fce7f3; border: none; padding: 5px 10px; font-size: 1rem; color: #bb157d; margin: 0 5px; border-radius: 8px; cursor: pointer; }
+  .qty-controls span { font-weight: bold; }
+  .remove-btn { color: #bb157d; font-size: 1.4rem; cursor: pointer; margin-left: 1rem; }
+  .cart-summary { margin-top: 2rem; text-align: right; }
+  .checkout-btn { margin-top: 1rem; background: #bb157d; color: #fff; padding: 0.8rem 1.5rem; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; }
+  .checkout-btn:hover { background: #9c0a68; }
+  .coupon-message { margin-top: 1rem; padding: 0.8rem; border-radius: 10px; background-color: #fce7f3; color: #bb157d; font-weight: 500; }
+</style>
+
+<div class="checkout-container">
+  <h2 style="color: #bb157d;">Review Your Cart</h2>
+  <div id="checkoutItems"></div>
+
+  <!-- Empty Cart Message -->
+  <div id="emptyCartMessage" style="display: none; text-align: center; margin-top: 2rem;">
+    <p style="color: #bb157d; font-size: 1.2rem;">Your cart is empty!</p>
+    <p>Click Add to Cart</p><br><br>
+    <a href="/" class="checkout-btn" style="text-decoration: none;">Continue Shopping</a>
+  </div><br><br><br>
+
+
+
+  <!-- Cart Summary -->
+  <div class="cart-summary">
+      <!-- Coupon Form -->
+  <form id="couponForm">
+    {% csrf_token %}
+    <input type="hidden" id="orderTotalInput" name="order_total" value="">
+    <input type="text" id="couponCode" name="coupon_code" placeholder="Enter Coupon Code" style="padding: 8px; border-radius: 10px; border: 1px solid #bb157d; width: 60%;">
+    <button class="checkout-btn" type="submit" style="margin-left: 10px;">Apply Coupon</button>
+  </form>
+
+  <!-- Coupon Message -->
+  <div id="couponMessage" class="coupon-message" style="display:none;"></div><br>
+    <h3>Total: ₹<span id="checkoutTotal">0</span></h3>
+    <button class="checkout-btn" id="placeOrderBtn">Place Order</button>
+  </div>
+</div>
+
+<script>
+  let cart = JSON.parse(localStorage.getItem('cart')) || {};
+  let checkoutItems = document.getElementById('checkoutItems');
+  let checkoutTotal = document.getElementById('checkoutTotal');
+  let orderTotalInput = document.getElementById('orderTotalInput');
+  let couponMessage = document.getElementById('couponMessage');
+  let appliedCoupon = null;
+
+  function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }
+
+  function renderCheckout() {
+    checkoutItems.innerHTML = '';
+    let totalAmount = 0;
+
+    if (Object.keys(cart).length === 0) {
+      document.getElementById('emptyCartMessage').style.display = 'block';
+      document.querySelector('.cart-summary').style.display = 'none';
+      return;
+    } else {
+      document.getElementById('emptyCartMessage').style.display = 'none';
+      document.querySelector('.cart-summary').style.display = 'block';
+    }
+
+    Object.values(cart).forEach(item => {
+      const subtotal = item.price * item.qty;
+      totalAmount += subtotal;
+
+      checkoutItems.innerHTML += `
+<div class="cart-item" data-id="${item.id}" data-size="${item.size}">
+  <div class="cart-details">
+    <img src="${item.img}" alt="${item.name}">
+    <div class="cart-info">
+      <h4>${item.name}</h4>
+      <p>(Size: ${item.size})</p>
+      <p>₹${item.price} × ${item.qty}</p>
+      <div class="qty-controls">
+        <span>Qty: ${item.qty}</span>
+        <span class="remove-btn" onclick="removeItem('${item.id}', '${item.size}')">×</span>
+      </div>
+    </div>
+  </div>
+  <div><strong style="color:#bb157d;">₹${subtotal.toFixed(2)}</strong></div>
+</div>
+
+      `;
+    });
+
+    orderTotalInput.value = totalAmount.toFixed(2);
+    checkoutTotal.textContent = totalAmount.toFixed(2);
+
+    if (appliedCoupon) {
+      applyCouponToBackend();
+    }
+  }
+
+  function increaseQty(id, size) {
+    let key = `${id}_${size}`;
+    if (cart[key]) {
+      cart[key].qty += 1;
+      saveCart();
+      renderCheckout();
+    }
+  }
+
+  function decreaseQty(id, size) {
+    let key = `${id}_${size}`;
+    if (cart[key] && cart[key].qty > 1) {
+      cart[key].qty -= 1;
+    } else {
+      delete cart[key];
+    }
+    saveCart();
+    renderCheckout();
+  }
+
+  function removeItem(id, size) {
+    let key = `${id}_${size}`;
+    delete cart[key];
+    saveCart();
+    renderCheckout();
+  }
+
+  function removeCoupon() {
+    appliedCoupon = null;
+    couponMessage.style.display = 'none';
+    renderCheckout();
+  }
+
+  function applyCouponToBackend() {
+    fetch('/checkout/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: new URLSearchParams({
+        coupon_code: appliedCoupon,
+        order_total: orderTotalInput.value
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        checkoutTotal.textContent = data.final_total.toFixed(2);
+        couponMessage.innerHTML = `${data.message} 
+          <button onclick="removeCoupon()" style="margin-left:10px;background:red;color:white;border:none;padding:4px 8px;border-radius:5px;cursor:pointer;">Remove</button>`;
+        couponMessage.style.display = 'block';
+      } else {
+        couponMessage.innerHTML = data.message;
+        couponMessage.style.display = 'block';
+        appliedCoupon = null;
+      }
+    });
+  }
+
+  document.getElementById('couponForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    appliedCoupon = document.getElementById('couponCode').value.trim();
+    applyCouponToBackend();
+  });
+
+  document.getElementById('placeOrderBtn').addEventListener('click', function () {
+    if (Object.keys(cart).length === 0) {
+      alert("Cart is empty!");
+      return;
+    }
+
+    fetch('/checkout/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+      },
+      body: JSON.stringify({
+        cart: cart || {},
+        coupon_code: appliedCoupon || ""
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === 'success') {
+        localStorage.removeItem('cart');
+        window.location.href = data.redirect_url;
+      } else {
+        alert('Error: ' + (data.message || 'Something went wrong'));
+      }
+    });
+  });
+
+  renderCheckout();
+</script>
+
+
+{% endblock %}

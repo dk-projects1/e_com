@@ -1,0 +1,77 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}Shipping Policy | DKenci{% endblock %}
+
+{% block content %}
+<section class="policy-section">
+    <div class="policy-container">
+        <h1 class="policy-title">Shipping Policy</h1>
+
+        <h3>📦 Delivery Time</h3>
+        <p>Delivery time will take around <strong>5–8 working days</strong> within India. Please note that Saturday and Sunday are not counted as working days.</p>
+
+        <h3>🚚 Delivery Charges</h3>
+        <p>We charge the shipping based on the product quantity and weight.</p>
+
+        <h3>📍 Tracking Orders</h3>
+        <p>Once your order is dispatched, the tracking information will be sent to your registered email.  
+        If you do not receive an email within 5 days of placing an order, please WhatsApp us at  
+        <a href="https://wa.me/916374247995" target="_blank">+91 63742 47995</a>.</p>
+
+        <h3>📦 Parcel Handling</h3>
+        <p>Our parcels are packed securely. Please remember to take an <strong>unboxing video (without pause or edit)</strong> when opening your parcel. This is required to claim any sort of issue.</p>
+    </div>
+</section>
+
+<style>
+.policy-section {
+    padding: 50px 20px;
+    background: #fff;
+    font-family: 'Inter', sans-serif;
+}
+
+.policy-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.policy-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f472b6;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.policy-container h3 {
+    color: #f472b6;
+    margin-top: 20px;
+}
+
+.policy-container p {
+    color: #444;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.policy-container a {
+    color: #f472b6;
+    text-decoration: none;
+}
+
+.policy-container a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .policy-title {
+        font-size: 24px;
+    }
+    .policy-container p {
+        font-size: 14px;
+    }
+}
+</style>
+{% endblock %}

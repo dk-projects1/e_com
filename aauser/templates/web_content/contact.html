@@ -1,0 +1,95 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}Contact | DKenci{% endblock %}
+
+{% block content %}
+<section class="contact-section">
+    <div class="contact-container">
+        
+        <!-- Title -->
+        <h1 class="contact-title">Contact</h1>
+        <p class="contact-subtitle">
+            We’d love to hear from you! Whether you have a question about your order, need help choosing the perfect outfit, 
+            or just want to share your shopping experience with us — we’re here to help.
+        </p>
+
+        <!-- Contact Info -->
+        <div class="contact-details">
+            <h3>📞 Customer Support</h3>
+            <p>Have a question or need assistance?<br>
+            WhatsApp us at: <a href="https://wa.me/916374247995" target="_blank">+91 63742 47995</a><br>
+            Available: Monday to Saturday, 10 AM – 7 PM IST</p>
+
+            <h3>📧 Email Us</h3>
+            <p>For order-related inquiries, or feedback:<br>
+            <a href="mailto:devaprojects66@gmail.com">devaprojects66@gmail.com</a></p>
+
+            <p><em>We aim to respond within 24–48 business hours.</em></p>
+        </div>
+    </div>
+</section>
+
+<style>
+.contact-section {
+    padding: 50px 20px;
+    background: #fff;
+    font-family: 'Inter', sans-serif;
+    text-align: center;
+}
+
+.contact-container {
+    max-width: 700px;
+    margin: auto;
+}
+
+.contact-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f472b6;
+}
+
+.contact-subtitle {
+    font-size: 16px;
+    color: #555;
+    margin: 15px 0 30px;
+    line-height: 1.6;
+}
+
+.contact-details {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    text-align: left;
+}
+
+.contact-details h3 {
+    color: #f472b6;
+    margin-bottom: 8px;
+}
+
+.contact-details p {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.contact-details a {
+    color: #f472b6;
+    text-decoration: none;
+}
+
+.contact-details a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .contact-details {
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}

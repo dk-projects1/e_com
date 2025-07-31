@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Category{% endblock %}
+
+{% block content %}
+<style>
+
+
+  .container {
+    max-width: 500px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+
+  form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+
+  form input, form textarea, form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  form button {
+    margin-top: 20px;
+    background: #00834c;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  form button:hover {
+    background-color: #006d3a;
+  }
+</style>
+
+<div class="container">
+  <h2>Edit Category</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <label for="name">Category Name</label>
+    <input type="text" id="name" name="name" value="{{ category.name }}" required>
+
+    <label for="image">Category Image</label>
+    <input type="file" id="image" name="image" accept="image/*">
+    {% if category.image %}
+      <p>Current Image: <img src="{{ category.image.url }}" width="100" /></p>
+    {% endif %}
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="3">{{ category.description }}</textarea>
+
+    <label for="status">Visibility Status</label>
+    <select id="status" name="status">
+      <option value={{category.visibility_status}} >{{category.visibility_status}}</option>
+      <option value="public" {% if category.visibility_status == "public" %}selected{% endif %}>Public</option>
+      <option value="hidden" {% if category.visibility_status == "hidden" %}selected{% endif %}>Hidden</option>
+    </select>
+
+    <label for="url_key">URL Key (SEO Friendly)</label>
+    <input type="text" id="url_key" name="url_key" value="{{ category.url_key }}">
+
+    <label for="meta_title">Meta Title</label>
+    <input type="text" id="meta_title" name="meta_title" value="{{ category.meta_title }}">
+
+    <label for="meta_keywords">Meta Keywords</label>
+    <input type="text" id="meta_keywords" name="meta_keywords" value="{{ category.meta_keyword }}">
+
+    <label for="meta_description">Meta Description</label>
+    <textarea id="meta_description" name="meta_description" rows="3">{{ category.meta_description }}</textarea>
+
+    <button type="submit">Update Category</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

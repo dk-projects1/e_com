@@ -1,0 +1,282 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}{{ product.name }} | View All{% endblock %}
+
+{% block content %}
+
+<style>
+/* ---------- Global Page Layout ---------- */
+.product-page {
+    font-family: 'Inter', sans-serif;
+    color: #2b2b2b;
+    background: linear-gradient(135deg, #fff 0%, #fff6fa 100%);
+    line-height: 1.6;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3rem;
+    padding: 3rem 1rem;
+}
+
+/* ---------- Sections ---------- */
+.product-page .product-gallery,
+.product-page .product-info {
+    flex: 1 1 360px;
+    max-width: 500px;
+}
+
+/* ---------- Main Product Image ---------- */
+.product-page .main-image {
+    width: 100%;
+    border-radius: 18px;
+    border: 2px solid #fbcfe8;
+    cursor: zoom-in;
+    background: #fff;
+    box-shadow: 0 8px 25px rgba(187, 21, 125, 0.08);
+    transition: all 0.4s ease;
+}
+.product-page .main-image:hover {
+    transform: scale(1.03);
+    box-shadow: 0 12px 40px rgba(187, 21, 125, 0.15);
+}
+
+/* ---------- Title & Pricing ---------- */
+.product-page h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #bb157d;
+    margin-bottom: 0.5rem;
+}
+.product-page .price {
+    font-size: 1.5rem;
+    margin: 0.5rem 0 1rem;
+}
+.product-page .current-price {
+    color: #bb157d;
+    font-weight: 800;
+}
+.product-page .old-price {
+    text-decoration: line-through;
+    color: #999;
+    margin-left: 0.6rem;
+}
+
+/* ---------- Form & Controls ---------- */
+.product-page .purchase-form {
+    margin-top: 1.5rem;
+}
+.product-page .purchase-form label {
+    font-weight: 600;
+    display: block;
+    margin-top: 1.2rem;
+    font-size: 0.95rem;
+}
+.product-page .purchase-form select,
+.product-page .purchase-form input[type="number"] {
+    padding: 0.6rem 0.8rem;
+    width: 100%;
+    border: 2px solid #fbcfe8;
+    border-radius: 10px;
+    background-color: #fff8fb;
+    margin-top: 0.4rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.product-page .purchase-form select:focus,
+.product-page .purchase-form input[type="number"]:focus {
+    outline: none;
+    border-color: #bb157d;
+    box-shadow: 0 0 0 3px rgba(187, 21, 125, 0.15);
+}
+
+/* ---------- Size Options ---------- */
+.size-badges {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.6rem;
+    flex-wrap: wrap;
+}
+.size-option {
+    background-color: rgba(187, 21, 125, 0.1);
+    color: #bb157d;
+    border: 2px solid #bb157d;
+    border-radius: 50px;
+    padding: 0.55rem 1.3rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.size-option:hover {
+    background-color: rgba(187, 21, 125, 0.25);
+}
+.size-option.active {
+    background-color: #bb157d;
+    color: #fff;
+}
+
+/* ---------- Buttons ---------- */
+.product-page .purchase-form button {
+    margin-top: 1.3rem;
+    background: linear-gradient(135deg, #bb157d, #9c0a68);
+    color: #ffffff;
+    border: none;
+    border-radius: 35px;
+    padding: 0.8rem 1.6rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 20px rgba(187, 21, 125, 0.2);
+    transition: all 0.3s ease;
+}
+.product-page .purchase-form button:hover {
+    background: linear-gradient(135deg, #9c0a68, #bb157d);
+    transform: translateY(-2px);
+}
+
+/* ---------- Description ---------- */
+.product-page .product-description {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f4d2e4;
+}
+.product-page .product-description h3 {
+    color: #bb157d;
+    margin-bottom: 0.6rem;
+    font-size: 1.3rem;
+}
+.product-page .product-description ul {
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+}
+.product-page .product-description li {
+    margin-bottom: 0.4rem;
+}
+
+/* ---------- Modal ---------- */
+.product-page #imageModal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.product-page #imageModal.active {
+    display: flex;
+}
+.product-page #modalImg {
+    max-width: 92vw;
+    max-height: 90vh;
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
+}
+</style>
+
+<div class="product-card" 
+     data-id="{{ product.pk }}" 
+     data-name="{{ product.name }}" 
+     data-price="{{ product.price }}" 
+     data-img="data:image/png;base64,{{ product.image }}"
+     data-stock="{{ product.variants|safe }}">
+    <main class="product-page">
+        <section class="product-gallery">
+            <img id="mainImage" class="main-image" src="data:image/png;base64,{{ product.image }}" alt="{{ product.name }}" />
+            <div id="imageModal">
+                <img id="modalImg" src="" alt="Zoomed view">
+            </div>
+        </section>
+
+        <section class="product-info">
+            <h2>{{ product.name }}</h2>
+            <div class="price">
+                <span class="current-price">₹{{ product.price }}</span>
+                <span class="old-price">₹{{ product.f_price }}</span>
+            </div>
+
+            <div id="purchaseForm" class="purchase-form">
+                <label for="size">Size:</label>
+                <div class="size-badges" id="sizeOptions">
+                    {% for size, qty in product.variants.items %}
+                        {% if qty > 0 %}
+                        <button type="button" class="size-option" data-size="{{ size }}" data-stock="{{ qty }}" onclick="selectSize(this)">
+                            {{ size }}
+                        </button>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <input type="hidden" id="size" name="size" required>
+
+                <label for="quantity">Qty:</label>
+                <input id="quantity" name="quantity" type="number" min="1" value="1" required>
+
+                <button type="button" onclick="checkStockBeforeAdd(this)">Add to Cart</button>
+                <a href="{% url 'checkout' %}"><button type="button">Buy now</button></a>
+            </div>
+
+            <div class="product-description">
+                <h3>Product Details</h3>
+                <ul>
+                    <li><b>Material:</b> {{ product.fabric }}</li>
+                    <li><b>Side Pocket:</b> {{ product.Pocket }}</li>
+                    <li><b>Sleeves:</b> {{ product.sleeves }}</li>
+                    <li><b>Height:</b> {{ product.hight }}</li>
+                    <li><b>Wash Care:</b> {{ product.wash_car }}</li>
+                </ul>
+                <p>{{ product.description }}</p>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+// Image zoom
+const mainImage = document.getElementById('mainImage');
+const imageModal = document.getElementById('imageModal');
+const modalImg = document.getElementById('modalImg');
+
+mainImage.addEventListener('click', () => {
+    modalImg.src = mainImage.src;
+    imageModal.classList.add('active');
+});
+imageModal.addEventListener('click', (e) => {
+    if (e.target === imageModal) {
+        imageModal.classList.remove('active');
+        modalImg.src = "";
+    }
+});
+
+// Size select
+function selectSize(button) {
+    document.querySelectorAll('.size-option').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    document.getElementById('size').value = button.dataset.size;
+}
+
+// Stock check before adding
+function checkStockBeforeAdd(button) {
+    const sizeInput = document.getElementById('size').value;
+    const qty = parseInt(document.getElementById('quantity').value);
+    const selectedBtn = document.querySelector('.size-option.active');
+
+    if (!sizeInput) {
+        alert("Please select a size.");
+        return;
+    }
+
+    const availableStock = parseInt(selectedBtn.getAttribute('data-stock'));
+
+    if (qty > availableStock) {
+        alert(`Only ${availableStock} available for this size.`);
+        return;
+    }
+
+    addToCart(button);
+    openCart();
+}
+</script>
+
+{% endblock %}

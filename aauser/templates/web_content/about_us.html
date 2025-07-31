@@ -1,0 +1,150 @@
+{% extends "base_u.html" %}
+{% load static %}
+
+{% block title %}About | DKenci{% endblock %}
+
+{% block content %}
+<section class="about-section">
+    <div class="about-container">
+        
+        <!-- Logo -->
+        <div class="about-logo">
+            <img src="{% static 'images/logo_pink_t.png' %}" alt="DKenci Logo">
+        </div>
+
+        <!-- Main Quote -->
+        <h2 class="quote">Slay the Day with DKENCI</h2>
+
+        <!-- About Us Content -->
+        <div class="about-text">
+            <h2>About Us – DKenci</h2>
+            <p>
+                Welcome to <strong>DKenci</strong>, where fashion meets comfort and quality meets style.
+                We believe that clothing is more than just fabric – it’s an expression of your personality, your confidence, and your lifestyle.
+            </p>
+
+            <p>
+                At DKenci, we are passionate about bringing you trendy, high-quality, and affordable fashion that helps you stand out, 
+                whether it’s for a casual day out, a special occasion, or your daily essentials.
+            </p>
+
+            <h3>Our Mission</h3>
+            <p>
+                To make style accessible for everyone without compromising on comfort, quality, or individuality. 
+                We aim to provide fashion-forward collections that fit every personality and occasion.
+            </p>
+
+            <h3>What We Offer</h3>
+            <ul>
+                <li><strong>Latest Fashion Trends</strong> – From timeless classics to the latest styles.</li>
+                <li><strong>Quality You Can Trust</strong> – Every piece is carefully chosen for durability and comfort.</li>
+                <li><strong>Affordable Prices</strong> – Because style shouldn’t come with a heavy price tag.</li>
+                <li><strong>Exceptional Service</strong> – A smooth, enjoyable shopping experience from click to delivery.</li>
+            </ul>
+
+            <h3>Why Choose DKenci?</h3>
+            <ul>
+                <li><strong>Handpicked Collections</strong> that blend modern design with everyday practicality.</li>
+                <li><strong>Fast & Secure Shipping</strong> so you get your order without the wait.</li>
+                <li><strong>Customer-First Approach</strong> – We listen, we care, we deliver.</li>
+            </ul>
+
+            <p>
+                At DKenci, you’re not just buying clothes – you’re joining a community of style lovers 
+                who believe in expressing themselves with confidence.
+            </p>
+
+            <p class="closing">💖 Be Bold. Be Stylish. Be You – With DKenci.</p>
+        </div>
+    </div>
+</section>
+
+<style>
+.about-section {
+    padding: 50px 20px;
+    background: #fff;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.about-container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.about-logo img {
+    max-width: 300px;
+    height: auto;
+    width: 100%;
+}
+
+.quote {
+    font-size: 26px;
+    font-weight: bold;
+    color: #ff5fb2;
+    margin: 20px 0;
+}
+
+.about-text {
+    margin-top: 20px;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #444;
+}
+
+.about-text h2, .about-text h3 {
+    color: #f472b6;
+}
+
+.about-text ul {
+    padding-left: 20px;
+    margin: 10px 0;
+}
+
+.about-text li {
+    margin-bottom: 8px;
+}
+
+.about-text strong {
+    color: #f472b6;
+}
+
+.closing {
+    font-weight: bold;
+    color: #ff5fb2;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+/* ✅ Responsive Styles */
+@media (max-width: 768px) {
+    .about-text {
+        font-size: 15px;
+    }
+    .quote {
+        font-size: 22px;
+    }
+    .about-logo img {
+        max-width: 220px;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-section {
+        padding: 30px 15px;
+    }
+    .quote {
+        font-size: 20px;
+    }
+    .about-text {
+        text-align: center; /* Better for mobile */
+        font-size: 14px;
+    }
+    .about-text ul {
+        padding-left: 0;
+        list-style-position: inside;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add New Collection{% endblock %}
+
+{% block content %}
+<style>
+  .container {
+    max-width: 500px;
+    margin: auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+
+  form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+  }
+
+  form input, form textarea, form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  form button {
+    margin-top: 20px;
+    background: #4CAF50;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  form button:hover {
+    background-color: #45a049;
+  }
+</style>
+
+<div class="container">
+  <h2>Add New Collection</h2>
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Collection Name -->
+    <label for="name">Collection Name</label>
+    <input type="text" id="name" name="name" placeholder="e.g. Summer Collection" required>
+
+    <!-- Slug -->
+    <label for="slug">Slug</label>
+    <input type="text" id="slug" name="slug" placeholder="e.g. summer-2025" required>
+
+    <!-- Description -->
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="3" placeholder="Short description..."></textarea>
+
+    <!-- Image -->
+    <label for="image">Collection Image</label>
+    <input type="file" id="image" name="image" accept="image/*">
+
+    <!-- Status -->
+    <label for="status">Status</label>
+    <select id="status" name="status" required>
+      <option value="">--Select--</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+
+    <!-- Submit -->
+    <button type="submit">Add Collection</button>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

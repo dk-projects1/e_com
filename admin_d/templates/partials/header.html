@@ -1,0 +1,48 @@
+<!-- templates/partials/header.html -->
+{% load static %}
+
+<header style="   background-color:rgba(255, 255, 255, 0.2); 
+  backdrop-filter: blur(10px);">
+  <!-- Menu button -->
+  <button class="menu-toggle" onclick="toggleSidebar()">&#9776;</button>
+  <!-- Logo -->
+  <a href="/">
+    <img src="{% static 'images/logo2.png' %}" alt="Logo"
+     style="height: 100px; vertical-align: middle; filter: brightness(0) saturate(100%);" />
+  </a>
+
+  <!-- Search input -->
+  <input type="text" placeholder="Search..." />
+
+  <!-- Date and time -->
+  <div id="datetime">Loading...</div>
+
+  <!-- Profile avatar -->
+  <div class="profile">
+    <div class="avatar">{{ initials }}</div>
+  </div>
+</header>
+
+<script>
+  function updateDateTime() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    hours = String(hours).padStart(2, '0');
+
+    const formatted = `${day}/${month}/${year} ${hours}:${minutes}:${seconds} ${ampm}`;
+    document.getElementById('datetime').textContent = formatted;
+  }
+
+  updateDateTime();
+  setInterval(updateDateTime, 1000);
+</script>
